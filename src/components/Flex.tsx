@@ -7,6 +7,8 @@ type flex = {
   justify?: string;
   width?: string;
   height?: string;
+  position?: string;
+  margin?: string;
 };
 
 const Flex = styled.div<flex>`
@@ -16,6 +18,8 @@ const Flex = styled.div<flex>`
   flex-direction: ${({ direction }) => direction};
   align-items: ${({ align }) => align};
   justify-content: ${({ justify }) => justify};
+  position: ${({ position }) => position};
+  margin: ${({ margin }) => margin};
 `;
 
 export default Flex;
