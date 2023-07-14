@@ -5,7 +5,7 @@ function getValueFromObjArr<T extends { [key: string]: any }[]>(
   const newArr: T[number][typeof key][] = [];
 
   for (let i = 0; i < arr.length; i++) {
-    newArr.push(arr[key]);
+    newArr.push(arr[i][key as string]);
   }
 
   return newArr;
