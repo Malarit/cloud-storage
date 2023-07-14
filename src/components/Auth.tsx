@@ -1,3 +1,5 @@
+import React from "react";
+
 import Input from "./Input";
 import Button from "./Button";
 import Flex from "./Flex";
@@ -5,13 +7,21 @@ import Wrapper from "./Wrapper";
 import Title from "./Title";
 
 import { theme } from "../Theme";
-import React from "react";
-import createObjFromArrValueToKey from "../utils/createObjFromArrValueToKey";
+import CheckList from "./CheckList";
+import checkValuesObjArr from "../utils/checkValuesObjArr";
+
+export type checkListType = {
+  text: string;
+  checkFn: (value: string) => boolean;
+};
 
 export type input = {
   name: string;
   placeholder: string;
   type: React.HTMLInputTypeAttribute;
+  autoComplete: string;
+  checkList: checkListType[];
+  checkListTitle?: string;
 };
 
 type auth = {
@@ -20,38 +30,102 @@ type auth = {
   buttonHeight: string;
   title: string;
   buttonText: string;
+  toggleText: string;
+  onClickButton?: (value: { [key: string]: string }) => void;
+  onClicktoggle?: () => void;
 };
 
+function createInital(list: input[]) {
+  const initalValue = {} as { [key: string]: string };
+  const initalCheck = {} as {
+    [key: string]: { text: string; check: boolean }[];
+  };
+
+  list.map((item) => {
+    const key = item.name;
+    initalValue[key] = "";
+    initalCheck[key] = item.checkList.map((item) => ({
+      text: item.text,
+      check: true,
+    }));
+  });
+
+  return { initalValue, initalCheck };
+}
+
 const Auth: React.FC<auth> = (props) => {
-  const { list, inputHeight, buttonHeight, title, buttonText } = props;
-  const [value, setValue] = React.useState(
-    createObjFromArrValueToKey(list, "name", "")
-  );
+  const {
+    list,
+    inputHeight,
+    buttonHeight,
+    title,
+    buttonText,
+    toggleText,
+    onClickButton,
+    onClicktoggle,
+  } = props;
+  const { initalValue, initalCheck } = createInital(list);
+  const [value, setValue] = React.useState(initalValue);
+  const [check, setCheck] = React.useState(initalCheck);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setValue((curr) => ({ ...curr, [name]: value }));
+    setValue((curr) => {
+      return { ...curr, [name]: value };
+    });
+
+    const input = list.find((input) => input.name === name);
+    if (!input) return;
+
+    const newCheckList = input.checkList.map((item) => {
+      const { text, checkFn } = item;
+      return { text, check: checkFn(value) };
+    });
+    setCheck((curr) => ({ ...curr, [name]: newCheckList }));
   };
 
   const inputs = list.map((input, i) => (
     <Wrapper margin="10px 0 0 0" key={i}>
       <Input
         {...input}
+        padding="0.3em"
         onChange={onChange}
         height={inputHeight}
         value={value[input.name]}
       />
+      {!checkValuesObjArr(check[input.name], "check", true) && (
+        <CheckList
+          padding="0 0.2em"
+          title={input.checkListTitle}
+          list={check[input.name]}
+          margin="0.5em 0 0 0"
+          color={"#fff"}
+          colorNegative={"#ff0000"}
+        />
+      )}
     </Wrapper>
   ));
 
   return (
     <Flex height="max-content" direction="column">
-      <Title margin="0 auto" fontFamily="medium" color={theme.colors.blue}>
+      <Title margin="0 auto" fontSize="medium" color={theme.colors.blue}>
         {title}
       </Title>
       {inputs}
-      <Button height={buttonHeight} margin="15px auto">
+      <Button
+        onClick={() => onClickButton?.(value)}
+        height={buttonHeight}
+        margin="1em auto 0 auto"
+      >
         {buttonText}
+      </Button>
+      <Button
+        bgColor="transparent"
+        height={buttonHeight}
+        margin="0.2em auto 0 auto"
+        onClick={onClicktoggle}
+      >
+        {toggleText}
       </Button>
     </Flex>
   );
