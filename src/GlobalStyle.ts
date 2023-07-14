@@ -18,8 +18,6 @@ const GlobalStyle = createGlobalStyle`
   h3,
   h4,
   p,
-  ul[class],
-  ol[class],
   li,
   figure,
   figcaption,
@@ -31,7 +29,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     min-height: 100vh;
-    max-width: 100%;
+    max-width: 100vw;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
     line-height: 1.5;

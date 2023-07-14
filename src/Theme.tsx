@@ -10,11 +10,11 @@ export const theme = {
   fontSizes: {
     small: "1em",
     medium: "1.5em",
-    large: "2.5em",
+    large: "2em",
   },
   border: {
     radius: "max(0.4vw, 0.4vh)",
-  }
+  },
 };
 
 export type fonstSizesKeys = keyof (typeof theme)["fontSizes"];
