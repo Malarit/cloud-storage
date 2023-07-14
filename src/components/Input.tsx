@@ -8,21 +8,27 @@ type input = {
   value: string | number | readonly string[];
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   height?: string;
+  padding?: string;
+  autoComplete?: string;
+  color?: string;
 };
 
 type placeholder = {
   active: boolean;
   translateY?: string;
+  padding?: string;
+  colorPlaceholder?: string;
 };
 
 type inputProps = input & {
   placeholder: string;
+  colorPlaceholder?: string;
 };
 
 const attrsPlaceholder = ({ translateY, active }: placeholder) => ({
   style: active
     ? {
-        transform: `translateY(calc(${translateY} * -1))`,
+        transform: `translateY(calc((${translateY} * -1) - 0.2em))`,
       }
     : {},
 });
@@ -33,8 +39,10 @@ const Placeholder = styled.div.attrs<placeholder>(
   position: absolute;
   pointer-events: none;
   border-radius: ${({ theme }) => theme.border.radius};
-  padding: 0.2em;
+  padding: ${({ padding }) => padding};
   transition: transform 0.5s ease;
+  z-index: 2;
+  color: ${({ colorPlaceholder }) => colorPlaceholder};
 
   ${({ active, theme }) =>
     active &&
@@ -56,9 +64,13 @@ const Placeholder = styled.div.attrs<placeholder>(
 
 const StyledInput = styled.input<input>`
   width: 100%;
+  outline: none;
   height: ${({ height }) => height};
   border-radius: ${({ theme }) => theme.border.radius};
+  padding: ${({ padding }) => padding};
   outline: none;
+  border: none;
+  z-index: 1;
 `;
 
 const JustTransition = styled.div`
@@ -68,7 +80,8 @@ const JustTransition = styled.div`
 `;
 
 const Input: React.FC<inputProps> = (props) => {
-  const { placeholder, ...inputProps } = props;
+  const { placeholder, value, padding, colorPlaceholder, ...inputProps } =
+    props;
   const [active, setActive] = React.useState(false);
 
   return (
@@ -81,9 +94,16 @@ const Input: React.FC<inputProps> = (props) => {
         <StyledInput
           onFocus={() => setActive(true)}
           onBlur={() => setActive(Boolean(props.value))}
+          value={value || ""}
+          padding={padding}
           {...inputProps}
         />
-        <Placeholder active={active} translateY={props.height}>
+        <Placeholder
+          padding={padding}
+          active={active}
+          translateY={props.height}
+          colorPlaceholder={colorPlaceholder}
+        >
           {placeholder}
         </Placeholder>
       </Flex>

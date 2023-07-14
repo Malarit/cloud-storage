@@ -11,6 +11,16 @@ type wrapper = {
   margin?: string;
   padding?: string;
   bgColor?: string;
+  borderRadius?: string;
+  zIndex?: number;
+  border?: string;
+  position?: string;
+  top?: string;
+  left?: string;
+  right?: string;
+  bottom?: string;
+  overflow?: string;
+  
 };
 
 const Wrapper = styled.div<wrapper>`
@@ -23,6 +33,15 @@ const Wrapper = styled.div<wrapper>`
   margin: ${({ margin }) => margin};
   padding: ${({ padding }) => padding};
   background-color: ${({ bgColor }) => bgColor};
+  border-radius: ${({ borderRadius }) => borderRadius};
+  z-index: ${({ zIndex }) => zIndex};
+  border: ${({ border }) => border};
+  position: ${({ position }) => position};
+  left: ${({ left }) => left};
+  top: ${({ top }) => top};
+  right: ${({ right }) => right};
+  bottom: ${({ bottom }) => bottom};
+  overflow: ${({ overflow }) => overflow};
 `;
 
 export default Wrapper;

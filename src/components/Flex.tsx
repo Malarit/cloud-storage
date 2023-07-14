@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-type flex = {
+export type flex = {
   children?: React.ReactNode;
   direction?: string;
   align?: string;
@@ -9,6 +9,10 @@ type flex = {
   height?: string;
   position?: string;
   margin?: string;
+  padding?: string;
+  color?: string;
+  float?: string;
+  overflow?: string;
 };
 
 const Flex = styled.div<flex>`
@@ -20,6 +24,9 @@ const Flex = styled.div<flex>`
   justify-content: ${({ justify }) => justify};
   position: ${({ position }) => position};
   margin: ${({ margin }) => margin};
+  padding: ${({ padding }) => padding};
+  color: ${({ color }) => color};
+  overflow: ${({ overflow }) => overflow};
 `;
 
 export default Flex;

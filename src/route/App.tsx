@@ -1,14 +1,21 @@
 import { Route, Routes } from "react-router-dom";
-import Login from "../pages/login";
-import styled  from "styled-components";
+import styled from "styled-components";
 
-const StyledApp = styled.div``;
+import Login from "../pages/login";
+import Home from "../pages/home";
+
+const StyledApp = styled.div`
+  max-width: 100vw;
+  width: 100%;
+  padding: 0 1em;
+  overflow: hidden;
+`;
 
 function App() {
   return (
     <StyledApp>
       <Routes>
-        <Route path="/" element={<></>} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </StyledApp>
