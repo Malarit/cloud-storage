@@ -44,9 +44,8 @@ const StyledPopap = styled.div<popap>`
   position: absolute;
 `;
 
-const Popup: React.FC<popupProps> = React.forwardRef((props, ref) => {
+const Popup = React.forwardRef<HTMLDivElement, popupProps>((props, ref) => {
   const { toggleElement, popupElement, toggle } = props;
-
   return (
     <PopupWrapper ref={ref}>
       {toggleElement}
