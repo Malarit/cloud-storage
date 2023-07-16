@@ -20,7 +20,8 @@ type wrapper = {
   right?: string;
   bottom?: string;
   overflow?: string;
-  
+  overflowX?: string;
+  overflowY?: string;
 };
 
 const Wrapper = styled.div<wrapper>`
@@ -42,6 +43,8 @@ const Wrapper = styled.div<wrapper>`
   right: ${({ right }) => right};
   bottom: ${({ bottom }) => bottom};
   overflow: ${({ overflow }) => overflow};
+  overflow-x: ${({ overflowX }) => overflowX};
+  overflow-y: ${({ overflowY }) => overflowY};
 `;
 
 export default Wrapper;

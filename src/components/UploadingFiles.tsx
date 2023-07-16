@@ -16,7 +16,8 @@ const UploadingFiles: React.FC<uploadingFiles> = (props) => {
 
   return (
     <Wrapper
-      overflow="scroll"
+      overflowY="scroll"
+      overflowX="hidden"
       maxHeight="100%"
       width="100%"
       position="absolute"
