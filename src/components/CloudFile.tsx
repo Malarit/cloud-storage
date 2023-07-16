@@ -7,6 +7,9 @@ import folder from "../assets/menu/create folder white.svg";
 import file from "../assets/menu/file white.svg";
 import React from "react";
 import { theme } from "../Theme";
+import TrackPopup from "./TrackPopup";
+
+type trackPopup = React.ComponentProps<typeof TrackPopup>;
 
 type cloudFile = {
   type: "folder" | "file";
@@ -17,6 +20,7 @@ type cloudFile = {
   onDragFile?: (files: { firstFile: cloudFile; secondFile: cloudFile }) => void;
   onClick?: () => void;
   active?: boolean;
+  trackPopup: trackPopup;
 };
 
 type cloudWrapper = {
@@ -49,7 +53,8 @@ const CloudGrid = styled(Grid)`
 `;
 
 const CloudFile: React.FC<cloudFile> = (props) => {
-  const { type, name, date, size, onDragFile, onClick, active } = props;
+  const { type, name, date, size, onDragFile, onClick, active, trackPopup } =
+    props;
   const [dropItem, setDropItem] = React.useState<cloudFile>();
 
   const onDragStart = (
@@ -95,7 +100,7 @@ const CloudFile: React.FC<cloudFile> = (props) => {
       width="auto"
     >
       <CloudGrid
-        templateColumns="minmax(150px, 1fr) minmax(5em, 20%) auto "
+        templateColumns="minmax(150px, 1fr) minmax(5em, 20%) minmax(2em, 10%) 10em"
         align="center"
         height="100%"
       >
@@ -112,6 +117,7 @@ const CloudFile: React.FC<cloudFile> = (props) => {
         </Flex>
         <CloudTitle>{date}</CloudTitle>
         <CloudTitle>{size}</CloudTitle>
+        <TrackPopup {...trackPopup} />
       </CloudGrid>
     </CloudWrapper>
   );
