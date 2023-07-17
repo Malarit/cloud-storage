@@ -1,5 +1,6 @@
 import React from "react";
 import ButtonWithIcon from "./ButtonWithIcon";
+import Wrapper from "./Wrapper";
 
 export type arr_menu<T> = {
   text: string;
@@ -18,6 +19,8 @@ type menu = {
   padding?: string;
   paddingIcon?: string;
   heightIcon?: string;
+  bgColorHover?: string;
+  bgColor?: string;
 };
 
 const Menu: React.FC<menu> = React.memo((props) => {
@@ -29,16 +32,18 @@ const Menu: React.FC<menu> = React.memo((props) => {
     padding,
     paddingIcon,
     heightIcon,
+    bgColorHover,
+    bgColor
   } = props;
   return (
-    <div>
+    <Wrapper bgColor={bgColor}>
       {element}
       {list.map(({ text, icon, cbValue, bgColor, color, disableHover }, i) => (
         <ButtonWithIcon
           key={i}
           disableHover={disableHover}
           marginIcon={marginIcon || "0 1.5em 0 0"}
-          bgColorHover="#ffffff11"
+          bgColorHover={bgColorHover || "#ffffff11"}
           margin={i > 0 ? "0.5em 0 0 0" : ""}
           onClick={() => onClick?.(cbValue)}
           padding={padding || "1.2em 1em"}
@@ -51,7 +56,7 @@ const Menu: React.FC<menu> = React.memo((props) => {
           paddingIcon={paddingIcon}
         />
       ))}
-    </div>
+    </Wrapper>
   );
 });
 
