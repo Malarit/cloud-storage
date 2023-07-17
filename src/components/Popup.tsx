@@ -1,6 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
+type popupWrapper = {
+  children?: React.ReactNode;
+  bgColor?: string;
+};
+
 type popap = {
   bgColor?: string;
   padding?: string;
@@ -21,10 +26,11 @@ type popupProps = {
   ref?: React.ForwardedRef<any>;
 } & popap;
 
-const PopupWrapper = styled.div`
-  position: relative;
+const PopupWrapper = styled.div<popupWrapper>`
   width: 100%;
+  position: relative;
   height: max-content;
+  background-color: ${({ bgColor }) => bgColor};
 `;
 
 const StyledPopap = styled.div<popap>`
@@ -47,7 +53,7 @@ const StyledPopap = styled.div<popap>`
 const Popup = React.forwardRef<HTMLDivElement, popupProps>((props, ref) => {
   const { toggleElement, popupElement, toggle } = props;
   return (
-    <PopupWrapper ref={ref}>
+    <PopupWrapper bgColor={props.bgColor} ref={ref}>
       {toggleElement}
       {toggle && <StyledPopap {...props}>{popupElement}</StyledPopap>}
     </PopupWrapper>
