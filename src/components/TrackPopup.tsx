@@ -17,7 +17,10 @@ type trackButton = {
 
 type trackPopup = {
   list: list[];
-  onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onClick?: (
+    name: string,
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
 };
 
 const attrsTrackButton = ({ left }: trackButton) => ({
@@ -55,12 +58,13 @@ const TrackPopup: React.FC<trackPopup> = (props) => {
   const leftElements = (i: number) =>
     active ? `${leftForElemments * i}%` : `${leftForElemments * indexPrimary}%`;
 
-  const listButtons = list.map(({ icon, primary }, i) => (
+  const listButtons = list.map(({ icon, primary, name }, i) => (
     <TrackButton
       text=""
       key={i}
       icon={icon}
-      onClick={onClick}
+      name={name}
+      onClick={(e) => onClick?.(name, e)}
       left={leftElements(i)}
       zIndex={primary ? 2 : 1}
       hide={primary ? false : !active}

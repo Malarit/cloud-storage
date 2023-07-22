@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import ModalNewFolder from "../../components/ModalNewFolder";
+import ModalSmall from "../../components/ModalSmall";
 import files from "../../store/files";
 
 const ModalNewFolderContainer: React.FC = observer(() => {
@@ -12,8 +12,11 @@ const ModalNewFolderContainer: React.FC = observer(() => {
   };
 
   return (
-    <ModalNewFolder
+    <ModalSmall
       title="Новая папка"
+      inputValue="Новая папка"
+      buttonLeftText="Отмена"
+      buttonRightText="Сохранить"
       onClickSave={onCLickSave}
       onClickCancel={onClickCancel}
     />

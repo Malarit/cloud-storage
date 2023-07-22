@@ -25,7 +25,7 @@ const arrMenu: arr_menu<screens>[] = [
   {
     text: "Корзина",
     icon: recent,
-    cbValue: "basket",
+    cbValue: "trash",
     bgColor: "transparent",
   },
   {
@@ -58,7 +58,7 @@ const popupMenu: arr_menu<modals>[] = [
 ];
 
 const MenuContainer: React.FC = observer(() => {
-  const refPopap = React.useRef<HTMLButtonElement>(null);
+  const refPopap = React.useRef<HTMLDivElement>(null);
   const [toggle, setToggle] = React.useState(false);
   const newMenu = arrMenu.map((item) =>
     item.cbValue === Screens.activeScreen

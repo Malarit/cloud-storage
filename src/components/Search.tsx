@@ -35,13 +35,13 @@ const Search: React.FC<search> = (props) => {
   const refComponent = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    window.onclick = (e) => {
+    const onClick = (e: MouseEvent) => {
       if (!refComponent.current) return;
       if (!e.composedPath().includes(refComponent.current)) setActive(false);
     };
-
+    window.addEventListener("click", onClick);
     return () => {
-      window.onclick = null;
+      window.removeEventListener("click", onClick);
     };
   }, []);
 

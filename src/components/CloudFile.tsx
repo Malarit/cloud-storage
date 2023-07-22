@@ -73,8 +73,10 @@ const CloudFile: React.FC<cloudFile> = (props) => {
   const onDrop = (e: React.DragEvent<HTMLDivElement>, props: cloudFile) => {
     const check =
       dropItem && props.type === "folder" && dropItem.id !== props.id;
+      
     e.preventDefault();
     e.currentTarget.style.border = `none`;
+
     if (check)
       onDragFile?.({
         firstFile: dropItem,
