@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-export type screens = "cloud" | "basket" | "profile";
+export type screens = "cloud" | "trash" | "profile";
 
 class Screens {
   activeScreen: screens = "cloud";
