@@ -44,10 +44,11 @@ const StyledPopap = styled.div<popap>`
   top: ${({ top }) => top};
   right: ${({ right }) => right};
   bottom: ${({ bottom }) => bottom};
-  border-radius: ${({ theme }) => theme.border.radius};
+  border-radius: ${({ theme }) => theme.border.radius };
   box-shadow: 0 1px 2px 0 rgba(255, 255, 255, 0.3),
     0 2px 6px 2px rgba(255, 255, 255, 0.15);
   position: absolute;
+  z-index: 2;
 `;
 
 const Popup = React.forwardRef<HTMLDivElement, popupProps>((props, ref) => {

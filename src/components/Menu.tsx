@@ -18,6 +18,7 @@ type menu = {
   marginIcon?: string;
   padding?: string;
   paddingIcon?: string;
+  paddingWrapper?: string;
   heightIcon?: string;
   bgColorHover?: string;
   bgColor?: string;
@@ -33,10 +34,11 @@ const Menu: React.FC<menu> = React.memo((props) => {
     paddingIcon,
     heightIcon,
     bgColorHover,
-    bgColor
+    bgColor,
+    paddingWrapper,
   } = props;
   return (
-    <Wrapper bgColor={bgColor}>
+    <Wrapper padding={paddingWrapper} bgColor={bgColor}>
       {element}
       {list.map(({ text, icon, cbValue, bgColor, color, disableHover }, i) => (
         <ButtonWithIcon

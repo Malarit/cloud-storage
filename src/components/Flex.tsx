@@ -13,12 +13,14 @@ export type flex = {
   color?: string;
   float?: string;
   overflow?: string;
+  maxHeight?: string;
 };
 
 const Flex = styled.div<flex>`
   display: flex;
   width: ${({ width }) => width || "100%"};
   height: ${({ height }) => height || "100%"};
+  max-height: ${({ maxHeight }) => maxHeight};
   flex-direction: ${({ direction }) => direction};
   align-items: ${({ align }) => align};
   justify-content: ${({ justify }) => justify};
