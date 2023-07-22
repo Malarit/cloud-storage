@@ -1,0 +1,44 @@
+import { Request, Response } from "express";
+
+import { config } from "../config/config.js";
+import { User } from "../models/models.js";
+import { jwtVerify } from "./jwt.js";
+
+export async function checkToken(token: string | undefined) {
+  if (!token) return;
+  return (
+    await User.findOne({
+      attributes: ["id"],
+      where: {
+        id: jwtVerify(token).data,
+      },
+    })
+  )?.get({ plain: true });
+}
+
+const verifyToken = async (
+  req: Request<any, any, any, any, any>,
+  res: Response
+) => {
+  try {
+    const token: string = req.cookies[config.jwt.ACCESS_TOKEN_NAME];
+
+    if (!token) {
+      res.status(403).json("Couldn't find token");
+      return;
+    }
+
+    const user = await checkToken(token);
+
+    if (!user) {
+      res.status(404).json("Couldn't find the user ");
+      return;
+    }
+
+    return user.id;
+  } catch (error) {
+    res.status(400).json({ Failed: error });
+  }
+};
+
+export default verifyToken;
