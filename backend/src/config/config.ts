@@ -15,7 +15,7 @@ const headers = {
 
 export const cors = new Cors(headers).setHeader();
 
-// from .env
+// default values .env
 const env = process.env;
 export const config = {
   server: {
@@ -23,22 +23,24 @@ export const config = {
     HOST: env.HOST || "localhost",
   },
   db: {
-    DATABASE: env.DATABASE || "postgres",
-    USERNAME: env.USERNAME || "postgres",
-    PASSWORD: env.PASSWORD,
+    DATABASE: env.DB_DATABASE || "postgres",
+    USERNAME: env.DB_USERNAME || "postgres",
+    PASSWORD: env.DB_PASSWORD,
     DIALECT: isDialect(env.DIALECT || "postgres"),
-    HOST: env.HOST || "localhost",
+    HOST: env.DB_HOST || "localhost",
+    PORT: Number(env.DB_PORT) || 5432,
   },
   jwt: {
-    ACCESS_TOKEN_SECRET: env.ACCESS_TOKEN_SECRET || "",
-    ACCESS_TOKEN_NAME: env.ACCESS_TOKEN_NAME || "access_token",
-    ACCESS_TOKEN_AGE: Number(env.ACCESS_TOKEN_AGE) || 3600,
+    ACCESS_TOKEN_SECRET: env.JWT_ACCESS_TOKEN_SECRET || "",
+    ACCESS_TOKEN_NAME: env.JWT_ACCESS_TOKEN_NAME || "access_token",
+    ACCESS_TOKEN_AGE: Number(env.JWT_ACCESS_TOKEN_AGE) || 3600,
   },
+  saveFileDestination: "./media/",
 };
 
 // jwt
 export const cookie: CookieOptions = {
-  maxAge: 3600000,
+  // maxAge: 3600000,
   sameSite: "none",
   secure: true,
   domain: "localhost",
