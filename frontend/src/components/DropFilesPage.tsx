@@ -19,6 +19,8 @@ const DropFilesPage: React.FC<dropFilesPage> = (props) => {
   const [active, setActive] = React.useState(false);
   const [disableDrag, setDisableDrag] = React.useState(false);
 
+  const [test, setTest] = React.useState<any>();
+
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setActive(false);
@@ -27,9 +29,9 @@ const DropFilesPage: React.FC<dropFilesPage> = (props) => {
       const items = e.dataTransfer.items;
       for (let i = 0; i < items.length; i++) {
         const item = items[i].webkitGetAsEntry();
-
         if (item) {
-          onDropFiles?.(scanFiles(item));
+          scanFiles(item).then((val) => console.log(val));
+          // onDropFiles?.(scanFiles(item));
         }
       }
       return;
@@ -37,7 +39,7 @@ const DropFilesPage: React.FC<dropFilesPage> = (props) => {
   };
 
   const onDragStart = () => setDisableDrag(true);
-  
+
   const onDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
 
   const onDragEnter = (e: React.DragEvent<HTMLDivElement>) => {

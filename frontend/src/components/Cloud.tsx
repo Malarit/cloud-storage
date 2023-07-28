@@ -34,8 +34,8 @@ const Cloud: React.FC<cloud> = (props) => {
 
   return (
     <>
-      {filters.map((filter) => (
-        <Filter onClick={(key) => onClickFilter?.(key)} list={filter} />
+      {filters.map((filter, i) => (
+        <Filter key={i} onClick={(key) => onClickFilter?.(key)} list={filter} />
       ))}
       <Wrapper margin="1em 0 0 0">
         <HeadersCloudFile onClick={onClickArrow} />

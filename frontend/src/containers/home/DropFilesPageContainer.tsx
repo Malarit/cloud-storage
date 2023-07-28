@@ -1,4 +1,5 @@
 import DropFilesPage from "../../components/DropFilesPage";
+import { cloud_mutation } from "../../hooks/queries";
 import { fileContainer } from "../../utils/scanFiles";
 
 type DropFilesPageContainer = {
@@ -6,8 +7,10 @@ type DropFilesPageContainer = {
 };
 
 const DropFilesPageContainer: React.FC<DropFilesPageContainer> = (props) => {
+  const mutation = cloud_mutation();
   const onDropFiles = (container: fileContainer) => {
-    console.log(container);
+    // mutation.mutate(container);
+    // console.log(container);
   };
 
   return <DropFilesPage onDropFiles={onDropFiles} {...props} />;
