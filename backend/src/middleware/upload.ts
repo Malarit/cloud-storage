@@ -1,14 +1,14 @@
 import multer from "multer";
 import { Request } from "express";
+import { config } from "../config/config.js";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./media/");
+    cb(null, config.saveFileDestination);
   },
   filename: (req, file, cb) => {
-    const fileType = file.mimetype.match(/(?<=image\/).+/);
-    if (fileType)
-      cb(null, Date.now() + "-" + file.fieldname + "." + fileType[0]);
+    const fileName = Date.now() + "-" + file.fieldname + "." + file.mimetype;
+    cb(null, fileName);
   },
 });
 
