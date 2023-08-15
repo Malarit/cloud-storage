@@ -30,11 +30,11 @@ const App = observer(() => {
     return () => clearInterval(timer);
   }, []);
 
-  // React.useEffect(() => {
-  //   if (account.userId === -1) return;
-  //   if (!account.userId) navigate("/login");
-  //   else navigate("/");
-  // }, [account.userId]);
+  React.useEffect(() => {
+    if (account.userId === -1) return;
+    if (!account.userId) navigate("/login");
+    else navigate("/");
+  }, [account.userId]);
 
   return (
     <StyledApp>
