@@ -25,7 +25,7 @@ export const config = {
   db: {
     DATABASE: env.DB_DATABASE || "postgres",
     USERNAME: env.DB_USERNAME || "postgres",
-    PASSWORD: env.DB_PASSWORD,
+    PASSWORD: env.DB_PASSWORD || "",
     DIALECT: isDialect(env.DIALECT || "postgres"),
     HOST: env.DB_HOST || "localhost",
     PORT: Number(env.DB_PORT) || 5432,
@@ -35,7 +35,7 @@ export const config = {
     ACCESS_TOKEN_NAME: env.JWT_ACCESS_TOKEN_NAME || "access_token",
     ACCESS_TOKEN_AGE: Number(env.JWT_ACCESS_TOKEN_AGE) || 3600,
   },
-  saveFileDestination: "./media/",
+  saveFileDestination: "media/",
 };
 
 // jwt
