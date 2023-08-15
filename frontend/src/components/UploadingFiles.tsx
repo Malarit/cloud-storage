@@ -6,12 +6,18 @@ import Wrapper from "./Wrapper";
 
 type uploadingFiles = {
   files: oneUploadingFile[];
+  onClick?: (id: number) => void;
 };
 
 const UploadingFiles: React.FC<uploadingFiles> = (props) => {
-  const { files } = props;
+  const { files, onClick } = props;
   const arr = files.map(({ fileName, value }, i) => (
-    <OneUploadingFile fileName={fileName} value={value} key={i} />
+    <OneUploadingFile
+      key={i}
+      value={value}
+      fileName={fileName}
+      onClick={() => onClick?.(i)}
+    />
   ));
 
   return (
