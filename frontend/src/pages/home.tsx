@@ -13,12 +13,13 @@ import Grid from "../components/Grid";
 import UploadingFilesContainer from "../containers/home/UploadingFilesContainer";
 import DropFilesPageContainer from "../containers/home/DropFilesPageContainer";
 import ModalDeleteFile from "../containers/home/ModalDeleteFile";
-import UploadContainer from "../containers/home/UloadContainer";
+import UploadContainer from "../containers/home/UploadContainer";
 import MenuContainer from "../containers/home/MenuContainer";
 import CloudContainer from "../containers/home/cloud/CloudContainer";
 import CloudContainerTrash from "../containers/home/trash/CloudContainerTrash";
 import ModalRecoverFile from "../containers/home/ModalRecoverFile";
 import ModalNewFolderContainer from "../containers/home/ModalNewFolderContainer";
+import ModalUpdateNameContainer from "../containers/home/ModalUpdateNameContainer";
 
 const JSX_SCREENS: { [key in screens]: JSX.Element } = {
   cloud: <CloudContainer />,
@@ -30,7 +31,7 @@ const JSX_MODALS: { [key in modals]: JSX.Element } = {
   delete: <ModalDeleteFile />,
   recover: <ModalRecoverFile />,
   "new folder": <ModalNewFolderContainer />,
-  "update name": <></>,
+  "update name": <ModalUpdateNameContainer/>,
   "upload file": <></>,
   "upload folder": <></>,
 };
