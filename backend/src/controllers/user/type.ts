@@ -1,9 +1,4 @@
-import { Request } from "express";
-
-export interface TypedRequest<T> extends Request<{}, {}, T, T> {
-  body: T;
-  query: T;
-}
+import { TypedRequest } from "../type.js";
 
 export type authorization = TypedRequest<{
   email: string;

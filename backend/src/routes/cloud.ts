@@ -6,4 +6,8 @@ const router = Router();
 
 router.post("/cloud", upload.array("files"), controller.set_file);
 
+router.get("/cloud", controller.get_files);
+router.get("/folder", controller.get_folder);
+router.get("/updateName", controller.update_name);
+
 export default router;

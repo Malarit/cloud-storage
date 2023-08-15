@@ -2,8 +2,8 @@ import express from "express";
 import { createServer } from "http";
 import cookieParser from "cookie-parser";
 
-import userRouter from "./rotes/user.js";
-import cloudRouter from "./rotes/cloud.js";
+import userRouter from "./routes/user.js";
+import cloudRouter from "./routes/cloud.js";
 
 import { runDB } from "./db/index.js";
 import { cors, config } from "./config/config.js";
