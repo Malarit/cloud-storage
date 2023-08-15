@@ -1,3 +1,5 @@
+import React from "react";
+import { useSearchParams } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import Cloud from "../../components/Cloud";
 import files from "../../store/files";
@@ -11,11 +13,11 @@ import folder from "../../assets/menu/create folder white.svg";
 import documets from "../../assets/menu/documents white.svg";
 import CloudFile from "../../components/CloudFile";
 
-type filterNames = "folder" | "images" | "documents" | "all files";
+export type filterNames = "folder" | "image" | "application" | "all files";
 type trackPopupListNames = "pen" | "download" | "delete" | "menu";
 
 type cloud = React.ComponentProps<typeof Cloud>;
-type file = cloud["files"];
+type files = cloud["files"];
 
 type filter = cloud["filters"][number][number];
 type filterNewTypeKey = Omit<filter, "key"> & { key: filterNames };
@@ -25,9 +27,12 @@ type list = cloudFileType["trackPopup"]["list"][number];
 type listNewNamesType = Omit<list, "name"> & { name: trackPopupListNames };
 
 type cloudGeneralContainer = {
-  fileList: file;
+  fileList: files;
   popupList?: list[];
-  onClickPopupFn?: (value: string, fileId: number) => void;
+  onClickPopupFn?: (value: string, file: files[number]) => void;
+  onDoubleClick?: (file: files[number]) => void;
+  activeRecent?: boolean;
+  onDragFile?: (files: { firstFile: cloudFileType; secondFile: cloudFileType }) => {}
 };
 
 const filterListFiles: filterNewTypeKey[] = [
@@ -40,13 +45,13 @@ const filterListFiles: filterNewTypeKey[] = [
   {
     text: "Изображения",
     icon: image,
-    key: "images",
+    key: "image",
     setActive: false,
   },
   {
     text: "Документы",
     icon: documets,
-    key: "documents",
+    key: "application",
     setActive: false,
   },
   {
@@ -91,28 +96,34 @@ export const trackPopupList: listNewNamesType[] = [
 
 const CloudGeneralContainer: React.FC<cloudGeneralContainer> = observer(
   (props) => {
-    const { fileList, popupList, onClickPopupFn } = props;
-
-    const onClickPopup = (name: trackPopupListNames, fileId: number) => {
-      files.setActiveFileId(fileId);
+    const { fileList, popupList, onClickPopupFn, onDoubleClick, activeRecent } =
+      props;
+    const [_, setSearchParams] = useSearchParams();
+    const onClickPopup = (name: trackPopupListNames, file: files[number]) => {
+      files.setActiveFile(file);
       popupActions[name]();
     };
 
-    const onClickFilter = (name: filterNames) => {};
+    const onClickFilter = (name: filterNames) => {
+      setSearchParams({ filter: name });
+    };
     const onClickArrow = () => {};
 
     return (
       <Cloud
-        filters={filters}
-        popupList={popupList || trackPopupList}
         files={fileList}
-        onClickFilter={(value) => onClickFilter?.(value as filterNames)}
-        onClickPopup={(value, id) =>
-          onClickPopupFn
-            ? onClickPopupFn?.(value, id)
-            : onClickPopup(value as trackPopupListNames, id)
-        }
+        filters={filters}
         onClickArrow={onClickArrow}
+        activeRecent={activeRecent}
+        onDoubleClick={onDoubleClick}
+        onDragFile={(files) => {}}
+        popupList={popupList || trackPopupList}
+        onClickFilter={(value) => onClickFilter?.(value as filterNames)}
+        onClickPopup={(value, file) =>
+          onClickPopupFn
+            ? onClickPopupFn(value, file)
+            : onClickPopup(value as trackPopupListNames, file)
+        }
       />
     );
   }
