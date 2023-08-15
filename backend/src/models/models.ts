@@ -48,7 +48,7 @@ export const Cloud: mt.cloud_model = sequelize.define("Cloud", {
   },
   size: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 });
 User.hasMany(Cloud, {
