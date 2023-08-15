@@ -14,7 +14,7 @@ const ModalUpdateNameContainer: React.FC = observer(() => {
   return (
     <ModalSmall
       title="Переименовать"
-      inputValue="file name"
+      inputValue={files.activeFile?.name}
       buttonLeftText="Отмена"
       buttonRightText="Сохранить"
       onClickSave={onCLickSave}

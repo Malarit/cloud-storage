@@ -13,7 +13,7 @@ const ModalDeleteFile: React.FC = () => {
   return (
     <ModalSmall
       title="Удалить"
-      inputValue="Подтвердите удаление файла"
+      inputValue="Перемесить файл в корзину?"
       buttonLeftText="Отмена"
       buttonRightText="Удалить"
       disableInput

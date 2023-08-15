@@ -1,10 +1,18 @@
-import { oneUploadingFile } from "../../components/OneUploadingFile";
+import { observer } from "mobx-react-lite";
 import UploadingFiles from "../../components/UploadingFiles";
+import files from "../../store/files";
 
-const UploadingFilesContainer: React.FC = () => {
-  const files: oneUploadingFile[] = [{ fileName: "string.png", value: 20 }];
-
-  return <>{files.length && <UploadingFiles files={files} />}</>;
-};
+const UploadingFilesContainer: React.FC = observer(() => {
+  return (
+    <>
+      {files.uploadFiles.length && (
+        <UploadingFiles
+          onClick={(i) => files.removeUploadFile(i)}
+          files={files.uploadFiles}
+        />
+      )}
+    </>
+  );
+});
 
 export default UploadingFilesContainer;

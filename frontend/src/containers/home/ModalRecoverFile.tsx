@@ -15,7 +15,7 @@ const ModalRecoverFile: React.FC = observer(() => {
     <ModalSmall
     disableInput
       title="Восстановление"
-      inputValue="Подтвердите восстановление файла"
+      inputValue="Восстановить файл?"
       buttonLeftText="Отмена"
       buttonRightText="Восстановить"
       onClickSave={onCLickSave}

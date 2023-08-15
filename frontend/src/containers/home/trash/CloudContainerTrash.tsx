@@ -2,7 +2,7 @@ import Cloud from "../../../components/Cloud";
 import CloudGeneralContainer, {
   trackPopupList,
   popupActions,
-} from "../../Cloud/CloudGeneralContainer";
+} from "../../cloud/CloudGeneralContainer";
 import recent from "../../../assets/menu/recent white.svg";
 import files from "../../../store/files";
 import { observer } from "mobx-react-lite";
@@ -78,8 +78,8 @@ const trashPopupList: listPopupNewNamesType[] = trackPopupList.map((item) => {
 }) as listPopupNewNamesType[];
 
 const CloudContainerTrash: React.FC = observer(() => {
-  const onClickPopup = (name: trackPopupListNames, fileId: number) => {
-    files.setActiveFileId(fileId);
+  const onClickPopup = (name: trackPopupListNames, fileId: file[number]) => {
+    files.setActiveFile(fileId);
     transPopupActions[name]();
   };
 
@@ -87,8 +87,8 @@ const CloudContainerTrash: React.FC = observer(() => {
     <CloudGeneralContainer
       fileList={fileList}
       popupList={trashPopupList}
-      onClickPopupFn={(name, fileId) =>
-        onClickPopup(name as trackPopupListNames, fileId)
+      onClickPopupFn={(name, file) =>
+        onClickPopup(name as trackPopupListNames, file)
       }
     />
   );
