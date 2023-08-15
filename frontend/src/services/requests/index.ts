@@ -1,4 +1,10 @@
-import { authorization, registration, itsMe, cloud } from "./requests";
+import {
+  authorization,
+  registration,
+  itsMe,
+  cloud,
+  cloud_get,
+} from "./requests";
 
 export const post = {
   authorization,
@@ -8,4 +14,5 @@ export const post = {
 
 export const get = {
   itsMe,
+  cloud: cloud_get,
 };
