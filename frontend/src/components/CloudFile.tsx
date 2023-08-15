@@ -19,8 +19,11 @@ type cloudFile = {
   id: number;
   onDragFile?: (files: { firstFile: cloudFile; secondFile: cloudFile }) => void;
   onClick?: () => void;
+  onDoubleClick?: () => void;
   active?: boolean;
   trackPopup: trackPopup;
+  setIcon?: string;
+  disableTrack?: boolean;
 };
 
 type cloudWrapper = {
@@ -53,8 +56,19 @@ const CloudGrid = styled(Grid)`
 `;
 
 const CloudFile: React.FC<cloudFile> = (props) => {
-  const { type, name, date, size, onDragFile, onClick, active, trackPopup } =
-    props;
+  const {
+    type,
+    name,
+    date,
+    size,
+    onDragFile,
+    onClick,
+    active,
+    trackPopup,
+    onDoubleClick,
+    setIcon,
+    disableTrack,
+  } = props;
   const [dropItem, setDropItem] = React.useState<cloudFile>();
 
   const onDragStart = (
@@ -73,23 +87,26 @@ const CloudFile: React.FC<cloudFile> = (props) => {
   const onDrop = (e: React.DragEvent<HTMLDivElement>, props: cloudFile) => {
     const check =
       dropItem && props.type === "folder" && dropItem.id !== props.id;
-      
     e.preventDefault();
     e.currentTarget.style.border = `none`;
-
-    if (check)
+    if (check) {
       onDragFile?.({
         firstFile: dropItem,
         secondFile: props,
       });
+      console.log({
+        firstFile: dropItem,
+        secondFile: props,
+      });
+    }
   };
-
   const onDragLeave = (e: React.DragEvent<HTMLDivElement>) =>
     (e.currentTarget.style.border = `none`);
 
   return (
     <CloudWrapper
       active={active}
+      onDoubleClick={onDoubleClick}
       onClick={onClick}
       onDragLeave={onDragLeave}
       onDragStart={(e) => onDragStart(e, props)}
@@ -107,7 +124,7 @@ const CloudFile: React.FC<cloudFile> = (props) => {
         height="100%"
       >
         <Flex height="max-content" width="100%">
-          <Icon src={type === "folder" ? folder : file} />
+          <Icon src={setIcon ? setIcon : type === "folder" ? folder : file} />
           <CloudTitle
             overflow="hidden"
             textOverflow="ellipsis"
@@ -119,7 +136,7 @@ const CloudFile: React.FC<cloudFile> = (props) => {
         </Flex>
         <CloudTitle>{date}</CloudTitle>
         <CloudTitle>{size}</CloudTitle>
-        <TrackPopup {...trackPopup} />
+        {!disableTrack && <TrackPopup {...trackPopup} />}
       </CloudGrid>
     </CloudWrapper>
   );

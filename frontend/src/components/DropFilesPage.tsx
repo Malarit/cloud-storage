@@ -1,11 +1,12 @@
+import React from "react";
 import styled from "styled-components";
 import ModalDropFile from "./ModalDropFile";
-import React from "react";
-import scanFiles, { fileContainer } from "../utils/scanFiles";
+import scanFiles from "../utils/scanFile/scanFiles";
+import { container } from "../utils/scanFile/types";
 
 type dropFilesPage = {
   children?: React.ReactNode;
-  onDropFiles?: (contaiener: fileContainer) => void;
+  onDropFiles?: (contaiener: container) => void;
 };
 
 const StyledDropFilesPage = styled.div`
@@ -19,8 +20,6 @@ const DropFilesPage: React.FC<dropFilesPage> = (props) => {
   const [active, setActive] = React.useState(false);
   const [disableDrag, setDisableDrag] = React.useState(false);
 
-  const [test, setTest] = React.useState<any>();
-
   const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setActive(false);
@@ -30,8 +29,7 @@ const DropFilesPage: React.FC<dropFilesPage> = (props) => {
       for (let i = 0; i < items.length; i++) {
         const item = items[i].webkitGetAsEntry();
         if (item) {
-          scanFiles(item).then((val) => console.log(val));
-          // onDropFiles?.(scanFiles(item));
+          scanFiles(item).then((val) => onDropFiles?.(val));
         }
       }
       return;

@@ -9,14 +9,16 @@ import Title from "./Title";
 export type oneUploadingFile = {
   fileName: string;
   value: number;
+  onClick?: () => void;
 };
 
 const RotateTitle = styled(Title)`
   transform: rotate(45deg);
+  transition: all 0.5s ease;
 `;
 
 const OneUploadingFile: React.FC<oneUploadingFile> = (props) => {
-  const { fileName, value } = props;
+  const { fileName, value, onClick } = props;
   return (
     <Flex justify="space-between" align="center" height="3em">
       <CircleProgress
@@ -29,7 +31,7 @@ const OneUploadingFile: React.FC<oneUploadingFile> = (props) => {
       <Title textOverflow="ellipsis" maxWidth="50%" overflow="hidden">
         {fileName}
       </Title>
-      <Button bgColor="transparent">
+      <Button onClick={onClick} bgColor="transparent">
         <RotateTitle fontSize="medium">+</RotateTitle>
       </Button>
     </Flex>
