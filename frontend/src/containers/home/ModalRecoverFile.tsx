@@ -1,25 +1,41 @@
 import { observer } from "mobx-react-lite";
 import ModalSmall from "../../components/ModalSmall";
 import files from "../../store/files";
+import { recover_file } from "../../hooks/queries";
+import useQueryFiles from "../../hooks/useQueryFiles";
 
 const ModalRecoverFile: React.FC = observer(() => {
-  const onCLickSave = (value: string) => {
+  const { refetch } = useQueryFiles.query({ enabled: false });
+  const recover_file_mutation = recover_file({
+    onSuccess() {
+      refetch();
+    },
+  });
+  
+  const onCLickSave = () => {
+    const file = files.activeFile;
+    if (!file) return;
+
+    recover_file_mutation.mutate({ id: file.id });
+
+    files.removeActiveFile();
     files.removeActiveModals();
   };
 
   const onClickCancel = () => {
     files.removeActiveModals();
+    files.removeActiveFile();
   };
 
   return (
     <ModalSmall
-    disableInput
+      disableInput
       title="Восстановление"
       inputValue="Восстановить файл?"
-      buttonLeftText="Отмена"
+      buttonLeftText="Нет"
       buttonRightText="Восстановить"
-      onClickSave={onCLickSave}
-      onClickCancel={onClickCancel}
+      onClickRight={onCLickSave}
+      onClickLeft={onClickCancel}
     />
   );
 });
