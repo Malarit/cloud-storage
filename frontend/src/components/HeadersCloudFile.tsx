@@ -11,7 +11,7 @@ const buttonsNamesArr = ["name", "date", "size"] as const;
 type buttonsNames = (typeof buttonsNamesArr)[number];
 
 type headersCloudFile = {
-  onClick?: (name: buttonsNames) => void;
+  onClick?: (params: { table: buttonsNames; sort: "ASC" | "DESC" }) => void;
 };
 
 type cloudIcon = {
@@ -51,8 +51,15 @@ const HeadersCloudFile: React.FC<headersCloudFile> = (props) => {
   const { onClick } = props;
 
   const onClickButton = (name: buttonsNames) => {
-    setActive((curr) => ({ ...curr, [name]: !curr[name] }));
-    onClick?.(name);
+    setActive((curr) => {
+      return Object.keys(curr)
+        .map((key) => ({ [key]: name === key ? !curr[name] : false }))
+        .reduce((prev, curr) => Object.assign(prev, curr), {}) as {
+        [key in buttonsNames]: boolean;
+      };
+    });
+
+    onClick?.({ table: name, sort: active[name] ? "ASC" : "DESC" });
   };
 
   return (
