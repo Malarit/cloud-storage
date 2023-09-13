@@ -80,9 +80,15 @@ const JustTransition = styled.div`
 `;
 
 const Input: React.FC<inputProps> = (props) => {
-  const { placeholder, value, padding, colorPlaceholder, ...inputProps } =
-    props;
-  const [active, setActive] = React.useState(false);
+  const {
+    placeholder,
+    value,
+    padding,
+    colorPlaceholder,
+    onChange,
+    ...inputProps
+  } = props;
+  const [active, setActive] = React.useState(Boolean(value));
 
   return (
     <JustTransition>
@@ -96,6 +102,10 @@ const Input: React.FC<inputProps> = (props) => {
           onBlur={() => setActive(Boolean(props.value))}
           value={value || ""}
           padding={padding}
+          onChange={(e) => {
+            setActive(Boolean(e.target.value));
+            onChange?.(e);
+          }}
           {...inputProps}
         />
         <Placeholder
