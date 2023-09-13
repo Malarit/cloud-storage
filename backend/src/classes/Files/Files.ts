@@ -1,137 +1,173 @@
-import { Op } from "sequelize";
-import { Cloud, Folder_Cloud } from "../../models/models.js";
-import { cloud } from "../../models/types.js";
+import { Op, Order, Sequelize } from "sequelize";
+import { Cloud, Folder_Cloud, Trash } from "../../models/models.js";
+import getPlainArr from "../../utils/getPlainArr.js";
+import getPlain from "../../utils/getPlain.js";
+import sizeFileConventor from "../../utils/sizeFileConventor.js";
 
 export type filters = "all files" | "folder" | "image" | "application";
+export type tableOrderNames = "name" | "date" | "size";
+export type orderType = { table: tableOrderNames; sort: "ASC" | "DESC" };
+export type getOpt = { trash?: boolean; folderId?: number };
+
+type constructorType = {
+  userId: number;
+  filter?: filters;
+  order?: orderType;
+  search?: string;
+  limit?: number;
+  page?: number;
+};
 
 class Files {
   private userId: number;
-  constructor(userId: number) {
+  private filter?: Exclude<filters, "all files">;
+  private order?: orderType;
+  private search?: string;
+  private limit?: number;
+  private page?: number;
+
+  constructor(data: constructorType) {
+    const { userId, filter, order, search, limit, page } = data;
     this.userId = userId;
+    this.order = order;
+    this.search = search;
+    this.filter = filter === "all files" ? undefined : filter;
+    this.limit = limit;
+    this.page = page;
   }
 
-  private reduceId<T extends { [key: string]: any }>(arr: T[], key: keyof T) {
+  private getPagination() {
+    if (!this.page || !this.limit) return {};
+    return { offset: this.page * this.limit, limit: this.limit };
+  }
+
+  private getOrderQuery() {
+    const orderFolders = Sequelize.literal(
+      `(case when type = 'folder' then 1 end)`
+    );
+    const defaultOrder = [
+      [orderFolders, "ASC"],
+      ["id", "ASC"],
+    ];
+    if (!this.order) return defaultOrder as Order;
+
+    const { table, sort } = this.order;
+    const names: { [key in tableOrderNames]: string } = {
+      date: "createdAt",
+      name: "name",
+      size: "size",
+    };
+
+    return [
+      [orderFolders, "ASC"],
+      [names[table], sort],
+    ] as Order;
+  }
+
+  private getWhereNameSearch() {
+    return this.search
+      ? { [Op.like]: "%" + this.search + "%" }
+      : { [Op.like]: "%" };
+  }
+
+  private getWhereFilter() {
+    return this.filter ? { [Op.like]: this.filter + "%" } : { [Op.like]: "%" };
+  }
+
+  private getArrFromArrObjByKey<T extends { [key: string]: any }>(
+    arr: T[],
+    key: keyof T
+  ) {
     return arr.reduce<number[]>((prev, curr) => {
       prev.push(curr[key]);
       return prev;
     }, []);
   }
 
-  private async get_cloud_id(folders: cloud[] | cloud) {
-    const folderId = Array.isArray(folders)
-      ? this.reduceId(folders, "id")
-      : folders.id;
-    return await Folder_Cloud.findAll({
-      where: {
-        folderId: folderId,
-      },
-    }).then((val) => val.map((folder) => folder.get({ plain: true })));
-  }
-
-  async getFolders() {
-    const folders = await Cloud.findAll({
-      attributes: { exclude: ["userId"] },
-      where: {
-        userId: this.userId,
-        type: "folder",
-      },
-    }).then((val) => val.map((folder) => folder.get({ plain: true })));
-
-    const cloud_id = await this.get_cloud_id(folders);
-    const files_id = this.reduceId(cloud_id, "cloudId");
-
-    const parentFolders = folders.filter(
-      (folder) => !files_id.includes(folder.id)
-    );
-
-    const data = {
-      folders: parentFolders,
-      getArrId: () => this.reduceId(folders, "id"),
-      get_cloud_id: () => cloud_id,
-    };
-
-    return data;
-  }
-
-  async getFolder(id: number, filter?: filters) {
+  private async getFilesInFolder(id: number) {
     const folder = await Cloud.findOne({
       attributes: { exclude: ["userId"] },
       where: {
         id,
       },
-    }).then((folder) => folder?.get({ plain: true }));
+    }).then(getPlain);
 
-    if (!folder) return;
+    if (!folder) return [];
 
-    const folder_cloud_id = await this.get_cloud_id(folder);
-    const folder_files_id = this.reduceId(folder_cloud_id, "cloudId");
-    const where_filter = filter
-      ? { [Op.like]: filter + "%" }
-      : { [Op.like]: "%" };
-
-    const files = await Cloud.findAll({
-      attributes: { exclude: ["userId"] },
+    const files = await Folder_Cloud.findAll({
       where: {
-        id: folder_files_id,
-        type: where_filter,
+        folderId: folder.id,
       },
-    }).then((val) => val.map((file) => file.get({ plain: true })));
+    }).then(getPlainArr);
 
-    const sortedFiles = files.sort((file) => file.type === "folder" ? -1 : 1);
-
-    return {
-      folder,
-      files: sortedFiles,
-    };
+    return files;
   }
 
-  async getFiles(filter?: Exclude<filters, "folder">) {
-    const folders = await this.getFolders();
-    const folder_cloud_id = await folders.get_cloud_id();
-    const folder_files_id = this.reduceId(folder_cloud_id, "cloudId");
+  private async getArrTrashId() {
+    const trash = await Trash.findAll({
+      where: { userId: this.userId },
+    }).then(getPlainArr);
 
-    const where_filter = filter ? { [Op.like]: filter + "%" } : undefined;
-
-    const files = await Cloud.findAll({
-      attributes: { exclude: ["userId"] },
-      where: {
-        id: {
-          [Op.not]: folder_files_id,
-        },
-        userId: this.userId,
-        type: {
-          [Op.not]: "folder",
-          ...where_filter,
-        },
-      },
-    }).then((val) => val.map((file) => file.get({ plain: true })));
-
-    const data = files.map((file) => ({
-      ...file,
-      name: file.name.split("#-#")[1],
-    }));
-
-    return { files: data, getFolders: () => folders.folders };
+    return this.getArrFromArrObjByKey(trash, "cloudId");
   }
 
-  async get(filter: filters = "all files", folderId?: number) {
+  private async getArrFilesIdInFolderCloud() {
+    const files = await Folder_Cloud.findAll().then(getPlainArr);
+    return this.getArrFromArrObjByKey(files, "cloudId");
+  }
+
+  async getWhereId(opt?: getOpt) {
+    const { trash, folderId } = opt || {};
+    const arrTrashId = await this.getArrTrashId();
 
     if (folderId) {
-      const _filter = filter === "all files" ? undefined : filter;
-      return this.getFolder(folderId, _filter).then((folder) => folder?.files);
+      const filesInFolder = await this.getFilesInFolder(folderId);
+      const arrIdFiles = this.getArrFromArrObjByKey(filesInFolder, "cloudId");
+      return { [Op.in]: arrIdFiles, [Op.notIn]: arrTrashId };
     }
 
-    switch (filter) {
-      case "all files":
-        const { files, getFolders } = await this.getFiles();
-        return [...getFolders(), ...files];
-
-      case "folder":
-        return (await this.getFolders()).folders;
-
-      default:
-        return (await this.getFiles(filter)).files;
+    if (trash) {
+      return arrTrashId;
     }
+
+    const arrFilesIdFolderCloud = await this.getArrFilesIdInFolderCloud();
+    return { [Op.not]: arrTrashId.concat(arrFilesIdFolderCloud) };
+  }
+
+  /**
+   * Возвращает файлы из бд
+   * @param trash если true, то вернет файлы из корзины
+   * @param folderId если указано, то вернет файлы из папки
+   * @returns data - файлы, count - количество оставшихся записей
+   */
+  async get(opt?: getOpt) {
+    const { convert } = sizeFileConventor();
+    const { rows, count } = await Cloud.findAndCountAll({
+      attributes: { exclude: ["userId"] },
+      where: {
+        id: await this.getWhereId(opt),
+        type: this.getWhereFilter(),
+        name: this.getWhereNameSearch(),
+      },
+      order: this.getOrderQuery(),
+      ...this.getPagination(),
+    });
+
+    const data = rows.map((file) => {
+      const filePlain = file.get({ plain: true });
+
+      if (filePlain.type !== "folder") {
+        return {
+          ...filePlain,
+          name: filePlain.name.split("#-#")[1],
+          size: convert(filePlain.size),
+        };
+      }
+
+      return { ...filePlain, size: convert(filePlain.size) };
+    });
+
+    return { data, count };
   }
 }
 
