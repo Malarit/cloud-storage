@@ -11,12 +11,13 @@ type uploadingFiles = {
 
 const UploadingFiles: React.FC<uploadingFiles> = (props) => {
   const { files, onClick } = props;
-  const arr = files.map(({ fileName, value }, i) => (
+  const arr = files.map(({ fileName, value, load }, i) => (
     <OneUploadingFile
       key={i}
       value={value}
       fileName={fileName}
       onClick={() => onClick?.(i)}
+      load={load}
     />
   ));
 
