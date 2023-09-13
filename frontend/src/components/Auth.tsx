@@ -33,6 +33,7 @@ type auth = {
   toggleText: string;
   onClickButton?: (value: { [key: string]: string }) => void;
   onClicktoggle?: () => void;
+  err?: { text: string; check: boolean };
 };
 
 function createInital(list: input[]) {
@@ -63,6 +64,7 @@ const Auth: React.FC<auth> = (props) => {
     toggleText,
     onClickButton,
     onClicktoggle,
+    err,
   } = props;
   const { initalValue, initalCheck } = createInital(list);
   const [value, setValue] = React.useState(initalValue);
@@ -70,10 +72,15 @@ const Auth: React.FC<auth> = (props) => {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setValue((curr) => {
       return { ...curr, [name]: value };
     });
 
+    checkList(name, value);
+  };
+
+  const checkList = (name: string, value: string = "") => {
     const input = list.find((input) => input.name === name);
     if (!input) return;
 
@@ -112,6 +119,15 @@ const Auth: React.FC<auth> = (props) => {
         {title}
       </Title>
       {inputs}
+      {err && err["check"] && (
+        <CheckList
+          list={[{ text: err?.text, check: err?.check }]}
+          colorNegative={"#ff0000"}
+          color={"#ff0000"}
+          padding="0 0.2em"
+          margin="0.5em 0 0 0"
+        />
+      )}
       <Button
         onClick={() => onClickButton?.(value)}
         height={buttonHeight}
