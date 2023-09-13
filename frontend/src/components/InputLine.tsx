@@ -9,6 +9,9 @@ type input = {
   margin?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
+  type?: string;
+  autoComplete?: string;
+  name?: string;
 };
 
 type line = {
