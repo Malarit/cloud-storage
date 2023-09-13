@@ -8,7 +8,7 @@ class Folder<T = File> {
   }
 
   getStruct(): structFolder {
-    const folderClone: Folder<File | string> = structuredClone(this);
+    const folderClone = structuredClone(this) as Folder<File | string>;
     const files: File[] = [];
 
     const get = (folder: Folder<File | string>) => {
