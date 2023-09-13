@@ -10,3 +10,8 @@ export type registration = TypedRequest<{
   password: string;
   email: string;
 }>;
+
+export type updateUserData = TypedRequest<{
+  userName: string;
+  email: string;
+}>;
