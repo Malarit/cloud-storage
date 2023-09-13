@@ -26,7 +26,7 @@ const Modal = styled.div<modal>`
   left: ${({ left, width }) => left || `calc(50% - ${width} / 2)`};
   width: ${({ width }) => width};
   height: ${({ height }) => height};
-  background-color: ${({ bgColor }) => bgColor};
+  background-color: ${({ bgColor }) => bgColor || "#000"};
   border-radius: ${({ theme }) => theme.border.radius};
   box-shadow: 0 1px 2px 0 rgba(255, 255, 255, 0.3),
     0 2px 6px 2px rgba(255, 255, 255, 0.15);
