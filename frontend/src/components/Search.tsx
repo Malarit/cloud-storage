@@ -9,6 +9,7 @@ import Icon from "./Icon";
 import ButtonWithIcon from "./ButtonWithIcon";
 
 type search = {
+  inputValue?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClickClose?: () => void;
 };
@@ -30,7 +31,7 @@ const SearchButtonWithIcon = styled(ButtonWithIcon)`
 `;
 
 const Search: React.FC<search> = (props) => {
-  const { onChange, onClickClose } = props;
+  const { onChange, onClickClose, inputValue } = props;
   const [active, setActive] = React.useState(false);
   const refComponent = React.useRef<HTMLInputElement>(null);
 
@@ -58,7 +59,11 @@ const Search: React.FC<search> = (props) => {
         >
           <Flex align="center">
             <Icon width="4em" height="1.5em" src={search} />
-            <Input onChange={onChange} onFocus={() => setActive(true)} />
+            <Input
+              value={inputValue}
+              onChange={onChange}
+              onFocus={() => setActive(true)}
+            />
             {active && (
               <SearchButtonWithIcon
                 onClick={onClickClose}
