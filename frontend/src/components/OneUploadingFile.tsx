@@ -5,11 +5,13 @@ import Button from "./Button";
 import CircleProgress from "./CircleProgress";
 import Flex from "./Flex";
 import Title from "./Title";
+import CircleLoad from "./CircleLoad";
 
 export type oneUploadingFile = {
   fileName: string;
   value: number;
   onClick?: () => void;
+  load?: boolean;
 };
 
 const RotateTitle = styled(Title)`
@@ -18,17 +20,28 @@ const RotateTitle = styled(Title)`
 `;
 
 const OneUploadingFile: React.FC<oneUploadingFile> = (props) => {
-  const { fileName, value, onClick } = props;
+  const { fileName, value, onClick, load } = props;
+  const loadProps = {
+    size: "1.5em",
+    strokeWidth: ".12em",
+    color: theme.colors.blue,
+    colorShadow: "#ffffff",
+  };
+  const loadJSX = load ? (
+    <CircleLoad {...loadProps} />
+  ) : (
+    <CircleProgress value={value} {...loadProps} />
+  );
+
   return (
     <Flex justify="space-between" align="center" height="3em">
-      <CircleProgress
-        value={value}
-        size={"1.5em"}
-        strokeWidth={".12em"}
-        color={theme.colors.blue}
-        colorShadow={"#ffffff"}
-      />
-      <Title textOverflow="ellipsis" maxWidth="50%" overflow="hidden">
+      {loadJSX}
+      <Title
+        textOverflow="ellipsis"
+        textAlign="center"
+        maxWidth="60%"
+        overflow="hidden"
+      >
         {fileName}
       </Title>
       <Button onClick={onClick} bgColor="transparent">
