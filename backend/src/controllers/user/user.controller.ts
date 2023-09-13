@@ -5,6 +5,7 @@ import { User } from "../../models/models.js";
 import { getHash, verifieHash } from "../../utils/hashedPassword.js";
 import { jwtSign } from "../../utils/jwt.js";
 import { config, cookie } from "../../config/config.js";
+import getPlain from "../../utils/getPlain.js";
 
 export const itsMe = asyncHandler(async (req, res) => {
   const userId = await verifyToken(req, res);
@@ -16,13 +17,11 @@ export const authorization = asyncHandler(
     try {
       const { email, password } = req.body;
 
-      const user = (
-        await User.findOne({
-          where: {
-            email: email,
-          },
-        })
-      )?.get({ plain: true });
+      const user = await User.findOne({
+        where: {
+          email: email,
+        },
+      }).then(getPlain);
 
       if (!user) {
         res.status(404).json("Couldn't find the user ");
@@ -58,13 +57,11 @@ export const registration = asyncHandler(
       password: hashPassword,
     }).save();
 
-    const user = (
-      await User.findOne({
-        where: {
-          userName: userName,
-        },
-      })
-    )?.get({ plain: true });
+    const user = await User.findOne({
+      where: {
+        userName: userName,
+      },
+    }).then(getPlain);
 
     const token = jwtSign(user?.id);
 
@@ -74,3 +71,40 @@ export const registration = asyncHandler(
       .json({ id: user?.id });
   }
 );
+
+export const userData = asyncHandler(async (req, res) => {
+  const userId = await verifyToken(req, res);
+  if (!userId) return;
+
+  const userData = await User.findOne({
+    attributes: ["userName", "email"],
+    where: { id: userId },
+  }).then(getPlain);
+
+  res.status(200).json(userData);
+});
+
+export const updateUserData = asyncHandler(
+  async (req: reqTypes.updateUserData, res) => {
+    const userId = await verifyToken(req, res);
+    if (!userId) return;
+    const { userName, email } = req.body;
+
+    await User.update(
+      { userName, email },
+      {
+        where: { id: userId },
+      }
+    );
+
+    res.status(200).json();
+  }
+);
+
+export const exitLogin = asyncHandler(async (req, res) => {
+  const userId = await verifyToken(req, res);
+  if (!userId) return;
+
+  res.clearCookie(config.jwt.ACCESS_TOKEN_NAME);
+  res.end();
+});
