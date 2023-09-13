@@ -14,6 +14,7 @@ const ModalNewFolderContainer: React.FC = observer(() => {
 
   const onClickCancel = () => {
     files.removeActiveModals();
+    files.removeActiveFile();
   };
 
   return (
@@ -22,8 +23,8 @@ const ModalNewFolderContainer: React.FC = observer(() => {
       inputValue="Новая папка"
       buttonLeftText="Отмена"
       buttonRightText="Сохранить"
-      onClickSave={onCLickSave}
-      onClickCancel={onClickCancel}
+      onClickRight={onCLickSave}
+      onClickLeft={onClickCancel}
     />
   );
 });
