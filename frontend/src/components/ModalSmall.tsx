@@ -13,16 +13,16 @@ type modalSmall = {
   title: string;
   buttonLeftText: string;
   buttonRightText: string;
+  onClickRight?: (value: string) => void;
+  onClickLeft?: () => void;
   inputValue?: string;
   disableInput?: boolean;
-  onClickCancel?: () => void;
-  onClickSave?: (value: string) => void;
 };
 
 const ModalSmall: React.FC<modalSmall> = (props) => {
   const {
-    onClickCancel,
-    onClickSave,
+    onClickRight,
+    onClickLeft,
     title,
     inputValue,
     buttonLeftText,
@@ -50,10 +50,10 @@ const ModalSmall: React.FC<modalSmall> = (props) => {
           )}
         </Wrapper>
         <Wrapper bottom="1em" right="1em" position="absolute">
-          <Button {...buttonProps} onClick={onClickCancel}>
+          <Button {...buttonProps} onClick={onClickLeft}>
             {buttonLeftText}
           </Button>
-          <Button {...buttonProps} onClick={() => onClickSave?.(value)}>
+          <Button {...buttonProps} onClick={() => onClickRight?.(value)}>
             {buttonRightText}
           </Button>
         </Wrapper>
