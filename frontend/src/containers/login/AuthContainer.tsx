@@ -15,71 +15,20 @@ interface kInput<T extends string> extends input {
   name: T;
 }
 
-const regList: kInput<inputKeysReg>[] = [
-  {
-    name: "userName",
-    placeholder: "Логин",
-    type: "text",
-    autoComplete: "off",
-    checkList: [],
-  },
-  {
-    name: "email",
-    placeholder: "Почта",
-    type: "text",
-    autoComplete: "email",
-    checkList: [
-      {
-        text: "Укажите действительную почту",
-        checkFn: (value) => Boolean(customMatch(value, "email")),
-      },
-    ],
-  },
-  {
-    name: "password",
-    placeholder: "Пароль",
-    type: "password",
-    autoComplete: "new-password",
-    checkListTitle: "Пароль должен:",
-    checkList: [
-      {
-        text: "Содержать хотябы одну цифру",
-        checkFn: (value) => Boolean(customMatch(value, "oneDigit")),
-      },
-      {
-        text: "Содержать хотябы одну заглавную ланискую букву",
-        checkFn: (value) => Boolean(customMatch(value, "allUpperCase")),
-      },
-      {
-        text: "Содержать хотябы 8 символов",
-        checkFn: (value) => Boolean(customMatch(value, "eightСhar")),
-      },
-    ],
-  },
-];
-
-const authList: kInput<inputKeysAuth>[] = [
-  {
-    name: "email",
-    placeholder: "Почта",
-    type: "text",
-    autoComplete: "email",
-    checkList: [],
-  },
-  {
-    name: "password",
-    placeholder: "Пароль",
-    type: "password",
-    autoComplete: "current-password",
-    checkList: [],
-  },
-];
-
 const AuthContainer: React.FC = observer(() => {
   const [toggle, setToggle] = React.useState(true);
+  const [errAuth, setErrAuth] = React.useState(true);
+  const [errReg, setErrReg] = React.useState(true);
+
   const mutationOption = { onSuccess: () => account.requestUserId() };
-  const mutation_auth = authorization(mutationOption);
-  const mutation_reg = registration(mutationOption);
+  const mutation_auth = authorization({
+    ...mutationOption,
+    onError: () => setErrAuth(false),
+  });
+  const mutation_reg = registration({
+    ...mutationOption,
+    onError: () => setErrReg(false),
+  });
   const onClickAuth = (value: valueOnClick<inputKeysAuth>) =>
     mutation_auth.mutate(value);
   const onClickReg = (value: valueOnClick<inputKeysReg>) =>
@@ -91,6 +40,71 @@ const AuthContainer: React.FC = observer(() => {
     onClicktoggle: () => setToggle((curr) => !curr),
   };
 
+  const regList: kInput<inputKeysReg>[] = [
+    {
+      name: "userName",
+      placeholder: "Логин",
+      type: "text",
+      autoComplete: "off",
+      checkList: [],
+    },
+    {
+      name: "email",
+      placeholder: "Почта",
+      type: "text",
+      autoComplete: "email",
+      checkList: [
+        {
+          text: "Укажите действительную почту",
+          checkFn: (value) => Boolean(customMatch(value, "email")),
+        },
+      ],
+    },
+    {
+      name: "password",
+      placeholder: "Пароль",
+      type: "password",
+      autoComplete: "new-password",
+      checkListTitle: "Пароль должен:",
+      checkList: [
+        {
+          text: "Содержать хотябы одну цифру",
+          checkFn: (value) => Boolean(customMatch(value, "oneDigit")),
+        },
+        {
+          text: "Содержать хотябы одну заглавную ланискую букву",
+          checkFn: (value) => Boolean(customMatch(value, "allUpperCase")),
+        },
+        {
+          text: "Содержать хотябы 8 символов",
+          checkFn: (value) => Boolean(customMatch(value, "eightСhar")),
+        },
+      ],
+    },
+  ];
+
+  const authList: kInput<inputKeysAuth>[] = [
+    {
+      name: "email",
+      placeholder: "Почта",
+      type: "text",
+      autoComplete: "email",
+      checkList: [],
+    },
+    {
+      name: "password",
+      placeholder: "Пароль",
+      type: "password",
+      autoComplete: "current-password",
+      checkList: [
+        {
+          text: "Неверный логин или пароль",
+          checkFn: () => errAuth,
+        },
+      ],
+    },
+  ];
+
   return (
     <>
       {toggle ? (
@@ -99,6 +113,7 @@ const AuthContainer: React.FC = observer(() => {
           title="Авторизация"
           buttonText="Авторизоваться"
           toggleText="Нет аккаунта?"
+          err={{ text: "Неверный логин или пароль", check: !errAuth }}
           list={authList}
           {...generalProps}
           onClickButton={(value) =>
@@ -111,6 +126,7 @@ const AuthContainer: React.FC = observer(() => {
           title="Регистрация"
           buttonText="Зарегистрироваться"
           toggleText="Есть аккаунт?"
+          err={{ text: "Эта почта уже занята", check: !errReg }}
           list={regList}
           {...generalProps}
           onClickButton={(value) =>
