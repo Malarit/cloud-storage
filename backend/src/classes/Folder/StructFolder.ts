@@ -8,7 +8,8 @@ class StructFolder {
     this.struct = struct;
   }
 
-  setFilesInStruct<T extends { name: string }>(files: T[]) {
+  setFilesInStruct<T extends { name: string; id: number }>(files: T[]) {
+    let copyFiles = [...files];
     const copyStruct = structuredClone(this.struct);
 
     const get = (struct: Folder<string | T>) => {
@@ -16,11 +17,13 @@ class StructFolder {
 
       filesStruct.map((file, i) => {
         if (typeof file === "string") {
-          const fileFind = files.find((item) => {
+          const fileFind = copyFiles.find((item) => {
             return item.name === file;
           });
           if (!fileFind) return;
+
           filesStruct[i] = fileFind;
+          copyFiles = copyFiles.filter((file) => file.id !== fileFind.id);
           return;
         }
 
