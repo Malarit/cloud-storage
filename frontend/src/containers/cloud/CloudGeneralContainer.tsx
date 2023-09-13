@@ -12,6 +12,9 @@ import image from "../../assets/menu/image white.svg";
 import folder from "../../assets/menu/create folder white.svg";
 import documets from "../../assets/menu/documents white.svg";
 import CloudFile from "../../components/CloudFile";
+import { update_folder_cloud } from "../../hooks/queries";
+import useQueryFiles from "../../hooks/useQueryFiles";
+import { cloud_get_params } from "../../services/requests/types";
 
 export type filterNames = "folder" | "image" | "application" | "all files";
 type trackPopupListNames = "pen" | "download" | "delete" | "menu";
@@ -26,13 +29,16 @@ type cloudFileType = React.ComponentProps<typeof CloudFile>;
 type list = cloudFileType["trackPopup"]["list"][number];
 type listNewNamesType = Omit<list, "name"> & { name: trackPopupListNames };
 
+type onDragFileType = cloud["onDragFile"];
+
 type cloudGeneralContainer = {
   fileList: files;
   popupList?: list[];
-  onClickPopupFn?: (value: string, file: files[number]) => void;
-  onDoubleClick?: (file: files[number]) => void;
   activeRecent?: boolean;
-  onDragFile?: (files: { firstFile: cloudFileType; secondFile: cloudFileType }) => {}
+  onDownScrolled?: () => void;
+  onClickPopupFn?: (value: string, file: NonNullable<files>[number]) => void;
+  onDoubleClick?: (file: NonNullable<files>[number]) => void;
+  onDragFile?: onDragFileType;
 };
 
 const filterListFiles: filterNewTypeKey[] = [
@@ -66,9 +72,18 @@ const filters = [filterListFiles];
 
 export const popupActions: { [key in trackPopupListNames]: any } = {
   pen: () => files.setActiveModal("update name"),
-  download: undefined,
+  download: () => {
+    const controller = new AbortController();
+    files.setActiveModal("download");
+    files.setUploadFile({
+      fileName: files.activeFile?.name || "",
+      value: 0,
+      load: true,
+      controller,
+    });
+  },
   delete: () => files.setActiveModal("delete"),
-  menu: undefined,
+  menu: () => {},
 };
 
 export const trackPopupList: listNewNamesType[] = [
@@ -96,10 +111,29 @@ export const trackPopupList: listNewNamesType[] = [
 
 const CloudGeneralContainer: React.FC<cloudGeneralContainer> = observer(
   (props) => {
-    const { fileList, popupList, onClickPopupFn, onDoubleClick, activeRecent } =
-      props;
+    const {
+      fileList,
+      popupList,
+      onClickPopupFn,
+      onDoubleClick,
+      activeRecent,
+      onDownScrolled,
+    } = props;
+    const [order, setOrder] = React.useState<cloud_get_params["order"]>();
+    const { refetch } = useQueryFiles.setOrder(order, {
+      enabled: false,
+      refetchOnWindowFocus: false,
+    });
+    const folder_cloud_mutation = update_folder_cloud({
+      onSuccess() {
+        refetch();
+      },
+    });
     const [_, setSearchParams] = useSearchParams();
-    const onClickPopup = (name: trackPopupListNames, file: files[number]) => {
+    const onClickPopup = (
+      name: trackPopupListNames,
+      file: NonNullable<files>[number]
+    ) => {
       files.setActiveFile(file);
       popupActions[name]();
     };
@@ -107,16 +141,39 @@ const CloudGeneralContainer: React.FC<cloudGeneralContainer> = observer(
     const onClickFilter = (name: filterNames) => {
       setSearchParams({ filter: name });
     };
-    const onClickArrow = () => {};
+    const onClickArrow: cloud["onClickArrow"] = (params) => {
+      setOrder(params);
+    };
+
+    const onDragFile: onDragFileType = (files) => {
+      const { file, folder } = files;
+      folder_cloud_mutation.mutate({
+        fileId: file.id,
+        folderId: folder.id,
+      });
+    };
+
+    const onScrollFiles = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+      const element = e.target as HTMLDivElement;
+      const { scrollHeight, scrollTop, offsetHeight } = element;
+      if (scrollHeight - (scrollTop + offsetHeight) < 100) {
+        onDownScrolled?.();
+      }
+    };
+
+    React.useEffect(() => {
+      refetch();
+    }, [order]);
 
     return (
       <Cloud
+        onScrollFiles={onScrollFiles}
         files={fileList}
         filters={filters}
         onClickArrow={onClickArrow}
         activeRecent={activeRecent}
         onDoubleClick={onDoubleClick}
-        onDragFile={(files) => {}}
+        onDragFile={onDragFile}
         popupList={popupList || trackPopupList}
         onClickFilter={(value) => onClickFilter?.(value as filterNames)}
         onClickPopup={(value, file) =>
