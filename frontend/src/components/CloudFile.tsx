@@ -9,6 +9,11 @@ import React from "react";
 import { theme } from "../Theme";
 import TrackPopup from "./TrackPopup";
 
+type onDragType = (
+  e: React.DragEvent<HTMLDivElement>,
+  props: cloudFile
+) => void;
+
 type trackPopup = React.ComponentProps<typeof TrackPopup>;
 
 type cloudFile = {
@@ -17,7 +22,8 @@ type cloudFile = {
   date: string;
   size: string;
   id: number;
-  onDragFile?: (files: { firstFile: cloudFile; secondFile: cloudFile }) => void;
+  onDragStart?: onDragType;
+  onDrop?: onDragType;
   onClick?: () => void;
   onDoubleClick?: () => void;
   active?: boolean;
@@ -61,75 +67,72 @@ const CloudFile: React.FC<cloudFile> = (props) => {
     name,
     date,
     size,
-    onDragFile,
+    onDragStart,
     onClick,
+    onDrop,
     active,
     trackPopup,
     onDoubleClick,
     setIcon,
     disableTrack,
   } = props;
-  const [dropItem, setDropItem] = React.useState<cloudFile>();
+  const ref = React.useRef<HTMLDivElement>(null);
 
-  const onDragStart = (
-    e: React.DragEvent<HTMLDivElement>,
-    props: cloudFile
-  ) => {
+  const onDragStartHandler: onDragType = (e, props) => {
     e.dataTransfer.setDragImage(new Image(), 0, 0);
-    setDropItem(props);
+    onDragStart?.(e, props);
   };
 
-  const onDragOver = (e: React.DragEvent<HTMLDivElement>, props: cloudFile) => {
+  const onDragOver: onDragType = (e, props) => {
     if (props.type === "folder")
       e.currentTarget.style.border = `1px solid ${theme.colors.blue}`;
   };
 
-  const onDrop = (e: React.DragEvent<HTMLDivElement>, props: cloudFile) => {
-    const check =
-      dropItem && props.type === "folder" && dropItem.id !== props.id;
+  const onDropHandler: onDragType = (e, props) => {
     e.preventDefault();
     e.currentTarget.style.border = `none`;
-    if (check) {
-      onDragFile?.({
-        firstFile: dropItem,
-        secondFile: props,
-      });
-      console.log({
-        firstFile: dropItem,
-        secondFile: props,
-      });
-    }
+    onDrop?.(e, props);
+
+ 
   };
-  const onDragLeave = (e: React.DragEvent<HTMLDivElement>) =>
-    (e.currentTarget.style.border = `none`);
+
+  const onDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.currentTarget.style.border = `none`;
+  };
+
+  const onDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
 
   return (
     <CloudWrapper
-      active={active}
-      onDoubleClick={onDoubleClick}
-      onClick={onClick}
-      onDragLeave={onDragLeave}
-      onDragStart={(e) => onDragStart(e, props)}
+      onDragEnter={onDragEnter}
+      onDragStart={(e) => onDragStartHandler(e, props)}
       onDragOver={(e) => onDragOver(e, props)}
-      onDrop={(e) => onDrop(e, props)}
-      draggable
+      onDrop={(e) => onDropHandler(e, props)}
+      onDoubleClick={onDoubleClick}
+      onDragLeave={onDragLeave}
+      onClick={onClick}
+      active={active}
       padding="0.2em 0.5em"
       minWidth="100%"
       height="3em"
       width="auto"
+      draggable
+      ref={ref}
     >
       <CloudGrid
-        templateColumns="minmax(150px, 1fr) minmax(5em, 20%) minmax(2em, 10%) 10em"
         align="center"
         height="100%"
+        templateColumns="minmax(150px, 1fr) minmax(5em, 20%) minmax(2em, 10%) 10em"
       >
         <Flex height="max-content" width="100%">
           <Icon src={setIcon ? setIcon : type === "folder" ? folder : file} />
           <CloudTitle
-            overflow="hidden"
-            textOverflow="ellipsis"
             width="100%"
             maxWidth="100%"
+            overflow="hidden"
+            textOverflow="ellipsis"
           >
             {name}
           </CloudTitle>
