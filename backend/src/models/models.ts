@@ -1,4 +1,4 @@
-import Sequelize, { DataTypes, ModelDefined } from "sequelize";
+import { DataTypes } from "sequelize";
 import sequelize from "../db/index.js";
 
 import * as mt from "./types.js";
@@ -97,4 +97,10 @@ export const Trash: mt.trash_model = sequelize.define("Trash", {
 });
 User.hasMany(Trash, {
   foreignKey: "userId",
+});
+Cloud.hasOne(Trash, {
+  foreignKey: "cloudId",
+});
+Cloud.hasOne(Trash, {
+  foreignKey: "parentCloudId",
 });

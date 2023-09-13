@@ -21,7 +21,7 @@ export interface cloud {
   userId: number;
   type: string;
   name: string;
-  size: string;
+  size: number;
 }
 
 interface folder_Cloud {
@@ -34,6 +34,7 @@ interface trash {
   id: number;
   userId: number;
   cloudId: number;
+  parentCloudId?: number;
 }
 
 export type user_model = Model<user, "id">;
