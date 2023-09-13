@@ -4,19 +4,22 @@ import Cloud from "../components/Cloud";
 
 type cloud = React.ComponentProps<typeof Cloud>;
 type files = cloud["files"];
+type uploadFilesType = oneUploadingFile & { controller?: AbortController };
 
 export type modals =
   | "new folder"
   | "upload file"
   | "upload folder"
   | "delete"
+  | "delete trash"
   | "update name"
-  | "recover";
+  | "recover"
+  | "download";
 
 class Files {
   activeModal: modals | null = null;
-  activeFile: files[number] | null = null;
-  uploadFiles: oneUploadingFile[] = [];
+  activeFile: NonNullable<files>[number] | null = null;
+  uploadFiles: uploadFilesType[] = [];
   folderPath: number[] = [];
 
   constructor() {
@@ -31,7 +34,7 @@ class Files {
     this.activeModal = null;
   }
 
-  setActiveFile(id: files[number]) {
+  setActiveFile(id: NonNullable<files>[number]) {
     this.activeFile = id;
   }
 
@@ -39,7 +42,7 @@ class Files {
     this.activeFile = null;
   }
 
-  setUploadFile(file: oneUploadingFile) {
+  setUploadFile(file: uploadFilesType) {
     this.uploadFiles.push(file);
     return this.uploadFiles.length - 1;
   }
@@ -49,6 +52,7 @@ class Files {
   }
 
   removeUploadFile(index: number) {
+    this.uploadFiles[index].controller?.abort();
     this.uploadFiles.splice(index, 1);
   }
 
