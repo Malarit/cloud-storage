@@ -104,11 +104,14 @@ const Cloud: React.FC<cloud> = (props) => {
 
     if (files.length === 0) {
       return (
-        <Flex align="center" justify="center" height="70vh">
-          <Title fontSize="medium" color="#fff">
-            Файлов.net
-          </Title>
-        </Flex>
+        <>
+          {activeRecent && getRecent()}
+          <Flex align="center" justify="center" height="70vh">
+            <Title fontSize="medium" color="#fff">
+              Файлов.net
+            </Title>
+          </Flex>
+        </>
       );
     }
 

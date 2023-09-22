@@ -96,12 +96,7 @@ const AuthContainer: React.FC = observer(() => {
       placeholder: "Пароль",
       type: "password",
       autoComplete: "current-password",
-      checkList: [
-        {
-          text: "Неверный логин или пароль",
-          checkFn: () => errAuth,
-        },
-      ],
+      checkList: [],
     },
   ];
 
@@ -113,7 +108,7 @@ const AuthContainer: React.FC = observer(() => {
           title="Авторизация"
           buttonText="Авторизоваться"
           toggleText="Нет аккаунта?"
-          err={{ text: "Неверный логин или пароль", check: !errAuth }}
+          err={{ text: "Неверный email или пароль", check: !errAuth }}
           list={authList}
           {...generalProps}
           onClickButton={(value) =>
@@ -126,7 +121,7 @@ const AuthContainer: React.FC = observer(() => {
           title="Регистрация"
           buttonText="Зарегистрироваться"
           toggleText="Есть аккаунт?"
-          err={{ text: "Эта почта уже занята", check: !errReg }}
+          err={{ text: "Эта почта уже зарегистрирована", check: !errReg }}
           list={regList}
           {...generalProps}
           onClickButton={(value) =>

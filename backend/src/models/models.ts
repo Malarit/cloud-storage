@@ -12,7 +12,7 @@ export const User: mt.user_model = sequelize.define("User", {
   userName: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
+    unique: false,
   },
   email: {
     type: DataTypes.STRING,

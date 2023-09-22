@@ -34,6 +34,9 @@ const Profile: React.FC = observer(() => {
   const { refetch } = exitLogin_query({
     refetchOnWindowFocus: false,
     enabled: false,
+    onSuccess: () => {
+      account.requestUserId();
+    },
   });
   const { data } = userData_query();
   const mutationUpdateUser = updateUserData();
@@ -90,10 +93,7 @@ const Profile: React.FC = observer(() => {
           </Button>
           <Button
             bgColor="red"
-            onClick={() => {
-              account.setUserId(-1);
-              refetch();
-            }}
+            onClick={() => refetch()}
             height="2em"
             width="5em"
           >

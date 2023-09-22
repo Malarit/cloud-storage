@@ -32,7 +32,7 @@ const save: saveType = async (folder, parentFolderName, userId) => {
   }).then((val) => val.get({ plain: true }));
   await Promise.all(
     folderData.fileId.map(async (id) => {
-     await Folder_Cloud.build({
+      await Folder_Cloud.build({
         folderId: folderDB.id,
         cloudId: id,
       }).save();
