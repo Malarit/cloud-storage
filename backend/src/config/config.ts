@@ -16,7 +16,7 @@ const headers = {
 
 export const cors = new Cors(headers).setHeader();
 
-// default values .env
+// default values .env and other
 const env = process.env;
 export const config = {
   server: {
@@ -41,7 +41,6 @@ export const config = {
 
 // jwt
 export const cookie: CookieOptions = {
-  // maxAge: 3600000,
   sameSite: "none",
   secure: true,
   domain: "localhost",
