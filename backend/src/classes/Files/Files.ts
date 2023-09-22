@@ -66,8 +66,8 @@ class Files {
 
   private getWhereNameSearch() {
     return this.search
-      ? { [Op.like]: "%" + this.search + "%" }
-      : { [Op.like]: "%" };
+      ? { [Op.iLike]: "%" + this.search + "%" }
+      : { [Op.iLike]: "%" };
   }
 
   private getWhereFilter() {
@@ -146,6 +146,7 @@ class Files {
       attributes: { exclude: ["userId"] },
       where: {
         id: await this.getWhereId(opt),
+        userId: this.userId,
         type: this.getWhereFilter(),
         name: this.getWhereNameSearch(),
       },
@@ -160,11 +161,11 @@ class Files {
         return {
           ...filePlain,
           name: filePlain.name.split("#-#")[1],
-          size: convert(filePlain.size),
+          size: convert(Number(filePlain.size)),
         };
       }
 
-      return { ...filePlain, size: convert(filePlain.size) };
+      return { ...filePlain, size: convert(Number(filePlain.size)) };
     });
 
     return { data, count };
