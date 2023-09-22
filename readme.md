@@ -49,20 +49,20 @@
 Здесь представлены возможности пользовательского интерфейса.
 
 Регистрация с валидацией данных.
-![reg](images\reg.gif)
+![reg](https://github.com/Malarit/cloud-storage/blob/main/images/reg.gif)
 Загрузка файлов как перетаскиванием, так и по нажатию.
-![dndFile](images\dndFile.gif)
-![create](images\create.gif)
+![dndFile](https://github.com/Malarit/cloud-storage/blob/main/images/dndFile.gif)
+![create](https://github.com/Malarit/cloud-storage/blob/main/images/create.gif)
 Поиск по имени файла.
-![search](images\search.gif)
+![search](https://github.com/Malarit/cloud-storage/blob/main/images/search.gif)
 Перетаскивание файлов.
-![dnd](images\dnd.gif)
+![dnd](https://github.com/Malarit/cloud-storage/blob/main/images/dnd.gif)
 Доступные действия с файлом. Переименовать, скачать, переместить в корзину, удалить, убрать из корзины.
-![doWFile](images\doWFile.gif)
+![doWFile](https://github.com/Malarit/cloud-storage/blob/main/images/doWFile.gif)
 Фильтрация и сортировка файлов.
-![sort](images\sort.gif)
+![sort](https://github.com/Malarit/cloud-storage/blob/main/images/sort.gif)
 Постраничный вывод файлов при прокрутке.
-![pagination](images\pagination.gif)
+![pagination](https://github.com/Malarit/cloud-storage/blob/main/images/pagination.gif)
 
 ## **Установка**
 
