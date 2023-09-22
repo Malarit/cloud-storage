@@ -7,16 +7,19 @@ import cloudRouter from "./routes/cloud.js";
 
 import { runDB } from "./db/index.js";
 import { cors, config } from "./config/config.js";
+import createCatalog from "./utils/createCatalog.js";
 
 const app = express();
 const server = createServer(app);
+
+createCatalog(config.saveFileDestination);
 
 app.use(cors);
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/media", express.static("./media"));
+app.use(config.saveFileDestination, express.static(config.saveFileDestination));
 
 app.use("/api", userRouter);
 app.use("/api", cloudRouter);
@@ -26,4 +29,3 @@ server.listen(config.server.PORT, () => {
 });
 
 runDB();
-console.log(config);
