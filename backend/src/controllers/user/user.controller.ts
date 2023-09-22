@@ -49,6 +49,13 @@ export const registration = asyncHandler(
   async (req: reqTypes.registration, res) => {
     const { userName, password, email } = req.body;
 
+    const checkUser = await User.findOne({ where: { email } });
+
+    if (checkUser) {
+      res.status(403).end();
+      return;
+    }
+
     const hashPassword = await getHash(password);
 
     await User.build({
@@ -59,7 +66,7 @@ export const registration = asyncHandler(
 
     const user = await User.findOne({
       where: {
-        userName: userName,
+        email,
       },
     }).then(getPlain);
 
