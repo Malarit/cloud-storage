@@ -19,7 +19,7 @@
   - ReactQuery
   - Axios
   - MobX
-  - Styled-Component
+  - Styled-components
 - api
   - NodeJS
   - Express
